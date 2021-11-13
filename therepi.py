@@ -4,39 +4,20 @@
 # LICENSE: https://unlicense.org
 # Mido Midi TherePi
 
+from gpiozero.input_devices import DistanceSensor
 import mido
 from mido import Message
 from mido.sockets import connect
 from time import sleep, time_ns
 from pygame.midi import frequency_to_midi
-import gpiozero
+# import gpiozero
 
 HOST = 'localhost'
 PORT = 8080
 
 # The two rangefinders
-volume_echo = gpiozero.Pin(2)
-volume_trigger = gpiozero.Pin(3)
-
-pitch_echo = gpiozero.Pin(20)
-pitch_trigger = gpiozero.Pin(21)
-
-def ping(trigger, echo):
-    trigger.low()
-    sleep(0.002)
-    trigger.high()
-    sleep(0.005)
-    trigger.low()
-    signalon = 0
-    signaloff = 0
-    while echo.value() == 0:
-        signaloff = time_ns()
-    while echo.value() == 1:
-        signalon = time_ns()
-    elapsed_time = signalon - signaloff
-    # duration = elapsed_time
-    distance = (elapsed_time * 0.343) / 2
-    return distance 
+volume = DistanceSensor(echo=2, trigger=3)
+pitch = DistanceSensor(echo=20, trigger=21)
 
 def map(x, in_min, in_max, out_min, out_max):
     """ Maps the value x from the input range to the output range """
@@ -61,7 +42,8 @@ output = connect(HOST, PORT)
 print("Starting TherePi Sender")
 while True:
     try:
-        distance = ping(trigger=pitch_trigger, echo=pitch_echo)
+        distance = pitch.distance
+        # velocity = volume.distance
         velocity = 127
         frequency = distance_to_frequency(distance)
         note = frequency_to_midi(frequency)

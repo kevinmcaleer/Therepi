@@ -1,3 +1,5 @@
 colorzero==2.0
 gpiozero==1.6.2
 python-osc==1.8.0
+mido==1.2.10
+pygame==2.1.0
