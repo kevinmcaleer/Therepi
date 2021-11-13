@@ -7,7 +7,7 @@
 import mido
 from mido import Message
 from mido.sockets import connect
-from time import sleep
+from time import sleep, time_ns
 from pygame.midi import frequency_to_midi
 import gpiozero
 
@@ -15,9 +15,28 @@ HOST = 'localhost'
 PORT = 8080
 
 # The two rangefinders
-volume = gpiozero.Pin(1)
-pitch = gpiozero.Pin(2)
+volume_echo = gpiozero.Pin(2)
+volume_trigger = gpiozero.Pin(3)
 
+pitch_echo = gpiozero.Pin(20)
+pitch_trigger = gpiozero.Pin(21)
+
+def ping(trigger, echo):
+    trigger.low()
+    sleep(0.002)
+    trigger.high()
+    sleep(0.005)
+    trigger.low()
+    signalon = 0
+    signaloff = 0
+    while echo.value() == 0:
+        signaloff = time_ns()
+    while echo.value() == 1:
+        signalon = time_ns()
+    elapsed_time = signalon - signaloff
+    # duration = elapsed_time
+    distance = (elapsed_time * 0.343) / 2
+    return distance 
 
 def map(x, in_min, in_max, out_min, out_max):
     """ Maps the value x from the input range to the output range """
@@ -42,12 +61,18 @@ output = connect(HOST, PORT)
 print("Starting TherePi Sender")
 while True:
     try:
-        for note in notes:
-            msg = Message('note_on', note=note, velocity=127, time=0)
-            output.send(msg)
-            print(msg)
-            sleep(0.5)
-            # output.send(Message('note_off', note=note))
+        distance = ping(trigger=pitch_trigger, echo=pitch_echo)
+        velocity = 127
+        frequency = distance_to_frequency(distance)
+        note = frequency_to_midi(frequency)
+        msg = Message('note_on', note=note, velocity=velocity, time=0)
+        output.send(msg)
+        # for note in notes:
+        #     msg = Message('note_on', note=note, velocity=127, time=0)
+        #     output.send(msg)
+        #     print(msg)
+        #     sleep(0.5)
+        #     # output.send(Message('note_off', note=note))
     except KeyboardInterrupt:
         output.close()
         break
