@@ -10,7 +10,7 @@ from mido import Message
 from mido.sockets import connect
 from time import sleep, time_ns
 from pygame.midi import frequency_to_midi
-# import gpiozero
+from gpiozero import DistanceSensor
 
 HOST = 'localhost'
 PORT = 8080
