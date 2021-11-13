@@ -12,7 +12,7 @@ from time import sleep, time_ns
 from pygame.midi import frequency_to_midi
 from gpiozero import DistanceSensor
 
-HOST = 'localhost'
+HOST = '192.168.1.219'
 PORT = 8080
 
 # The two rangefinders
@@ -43,6 +43,7 @@ print("Starting TherePi Sender")
 while True:
     try:
         distance = pitch.distance
+        sleep(0.1)
         # velocity = volume.distance
         velocity = 127
         frequency = distance_to_frequency(distance)
