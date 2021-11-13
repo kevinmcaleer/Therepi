@@ -12,7 +12,7 @@ from time import sleep
 # Create some notes to send
 notes = [60,65,70,61,62, 60]
 
-HOST = 'localhost'
+HOST = '192.168.1.229'
 PORT = 8080
 
 output = connect(HOST, PORT)
@@ -27,5 +27,10 @@ while True:
             sleep(0.5)
             # output.send(Message('note_off', note=note))
     except KeyboardInterrupt:
+        #output.close()
+        for note in notes:
+            msg = Message('note_off', note=note)
+            output.send(msg)
+            sleep(0.1)
         output.close()
         break
