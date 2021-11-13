@@ -16,8 +16,8 @@ HOST = 'localhost'
 PORT = 8080
 
 # The two rangefinders
-volume = DistanceSensor(echo=2, trigger=3)
-pitch = DistanceSensor(echo=20, trigger=21)
+volume = DistanceSensor(echo=20, trigger=21)
+pitch = DistanceSensor(echo=22, trigger=27)
 
 def map(x, in_min, in_max, out_min, out_max):
     """ Maps the value x from the input range to the output range """
