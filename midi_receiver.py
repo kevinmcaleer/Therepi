@@ -9,7 +9,7 @@ from mido import Message
 from mido.sockets import PortServer
 # from midi.ports import port
 
-HOST = 'localhost'
+HOST = '192.168.1.229'
 PORT = 8080
 
 # Setup Midi Environment
