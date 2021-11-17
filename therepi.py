@@ -25,11 +25,11 @@ def map(x, in_min, in_max, out_min, out_max):
 
 def distance_to_frequency(distance):
     """ Maps the distance to the frequency """
-    frequency = map(distance, 5, 40, 60, 120)
+    frequency = map(distance, 5, 50, 60, 120)
     return frequency
 
 def distance_to_velocity(distance):
-    velocity = map(distance, 5, 40, 0, 127)
+    velocity = map(distance, 5, 50, 0, 127)
     return velocity
 
 def distance_to_note(distance:float):
@@ -50,12 +50,6 @@ while True:
         note = frequency_to_midi(frequency)
         msg = Message('note_on', note=note, velocity=velocity, time=0)
         output.send(msg)
-        # for note in notes:
-        #     msg = Message('note_on', note=note, velocity=127, time=0)
-        #     output.send(msg)
-        #     print(msg)
-        #     sleep(0.5)
-        #     # output.send(Message('note_off', note=note))
     except KeyboardInterrupt:
         output.close()
         break

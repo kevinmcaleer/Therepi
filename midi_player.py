@@ -10,15 +10,15 @@ from mido.sockets import connect
 from time import sleep
 from mido.midifiles import MidiFile
 
-HOST = 'localhost'
+HOST = '192.168.1.229'
 PORT = 8080
-FILENAME = 'local/DAS-BOOT.MID'
+FILENAME = 'tocata.mid'
 
 
 output = connect(HOST, PORT)
 
 print("Starting Midi Player")
-for msg in MidiFile('DAS-BOOT.MID').play():
+for msg in MidiFile('tocata.mid').play():
     print(msg)
     output.send(msg)
 
