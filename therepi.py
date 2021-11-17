@@ -12,7 +12,7 @@ from time import sleep, time_ns
 from pygame.midi import frequency_to_midi
 from gpiozero import DistanceSensor
 
-HOST = 'localhost'
+HOST = '192.168.1.229'
 PORT = 8080
 
 # The two rangefinders
