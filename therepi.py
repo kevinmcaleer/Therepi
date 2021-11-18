@@ -9,13 +9,13 @@ import mido
 from mido import Message
 from mido.sockets import connect
 from time import sleep, time_ns
-from pygame.midi import frequency_to_midi
+# from pygame.midi import frequency_to_midi
 from gpiozero import DistanceSensor
 
 HOST = '192.168.1.229'
 PORT = 8080
 
-min_distance = 5 # cm
+min_distance = 15 # cm
 max_distance = 50 # cm
 
 # The two rangefinders
@@ -26,12 +26,12 @@ def map(x, in_min, in_max, out_min, out_max):
     """ Maps the value x from the input range to the output range """
     return int((x-in_min) * (out_max-out_min) / (in_max-in_min) + out_min)
 
-def distance_to_frequency(distance, min, max):
-    """ Maps the distance to the frequency """
+def distance_to_note(distance, min, max):
+    """ Maps the distance to the note """
     
     if distance in range(min,max+1):
-        frequency = map(distance, min, max, 60, 120)
-        return frequency
+        d_note = int(map(distance, min, max, 60, 72))
+        return d_note
     else:
         return None
 
@@ -43,11 +43,12 @@ def distance_to_velocity(distance, min, max):
     else:
         return None
 
-def distance_to_note(distance):
-    """ Converts the distance read from the range finder to a note """
-    note = frequency_to_midi(distance)
-    print("distance", distance, "note", note)
-    return note
+# def distance_to_note(distance):
+#     """ Converts the distance read from the range finder to a note """
+#     #note = frequency_to_midi(distance)
+#     note = distance
+#     print("distance", distance, "note", note)
+#     return note
 
 output = connect(HOST, PORT)
 
@@ -67,37 +68,47 @@ while True:
 #         print("distance", distance, "volume", vol)
         #velocity = 127
 #         print("d", distance, "v",vol)
-        frequency = distance_to_frequency(distance, min_distance, max_distance)
+        frequency = distance_to_note(distance, min_distance, max_distance)
         velocity = distance_to_velocity(vol, min_distance, max_distance)
 #         print("freq",frequency, "velocity",velocity)
         #print('frequency',frequency, 'last_frequency', last_frequency)
+        if frequency is None:
+            msg = Message('note_off', note=last_note)
+            output.send(msg)
+            print(msg)
+            last_frequency = frequency
+            note = 0
+        
         if (frequency is None) and (frequency != last_frequency):
             msg = Message('note_off', note=note)
             output.send(msg)
             print(msg)
             last_frequency = frequency
         
-        if (frequency is not None) and (velocity is not None):
+        if (frequency is not None):
 #             print("freq",frequency, "velocity",velocity)
-            
-            note = frequency_to_midi(frequency)
+            if velocity == None:
+                velocity = 127
+            #note = frequency_to_midi(frequency)
+            note = frequency
             if note != last_note:
                 msg = Message('note_off', note=last_note)
                 output.send(msg)
                 print(msg)
-                sleep(0.001)
+                sleep(0.0001)
                 msg = Message('note_on', note=note, velocity=velocity, time=0)
                 output.send(msg)
                 print(msg)
 #             else:
 #                 msg = Message('note_on',note=note)
-#             if velocity != last_volume:
-#                 msg.copy(velocity=velocity)
-#                 output.send(msg)
-#                 print(msg)
+            if velocity != last_volume:
+                msg.copy(velocity=velocity)
+                output.send(msg)
+                print(msg)
             last_note = note
             last_volume = velocity
-            sleep(0.25)
+        last_frequency = frequency
+        sleep(0.001)
             
         # for note in notes:
         #     msg = Message('note_on', note=note, velocity=127, time=0)
