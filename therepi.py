@@ -39,8 +39,8 @@ def map(x, in_min, in_max, out_min, out_max):
 def map_distance(distance, inmin, inmax, outmin, outmax):
     """ converts distance to note pitch or velocity """
 
-    if distance in range(min,max+1):
-        velocity = map(distance, min, max, outmin, outmax)
+    if distance in range(inmin,inmax+1):
+        velocity = map(distance, inmin, inmax, outmin, outmax)
         return velocity
     else:
         return None
