@@ -27,32 +27,33 @@ def map(x, in_min, in_max, out_min, out_max):
     return int((x-in_min) * (out_max-out_min) / (in_max-in_min) + out_min)
 
 
-def distance_to_note(distance, min, max):
-    """ Maps the distance to the note """
+# def distance_to_note(distance, min, max):
+#     """ Maps the distance to the note """
     
-    if distance in range(min,max+1):
-        d_note = int(map(distance, min, max, 60, 72))
-        return d_note
-    else:
-        return None
+#     if distance in range(min,max+1):
+#         d_note = int(map(distance, min, max, 60, 72))
+#         return d_note
+#     else:
+#         return None
 
-def distance_to_velocity(distance, min, max):
-    """ converts distance to note velocity """
+def map_distance(distance, inmin, inmax, outmin, outmax):
+    """ converts distance to note pitch or velocity """
+
     if distance in range(min,max+1):
-        velocity = map(distance, min, max, 0, 127)
+        velocity = map(distance, min, max, outmin, outmax)
         return velocity
     else:
         return None
 
-def distance_to_frequency(distance):
-    """ Maps the distance to the frequency """
-    frequency = map(distance, 5, 50, 60, 120)
-    return frequency
+# def distance_to_frequency(distance):
+#     """ Maps the distance to the frequency """
+#     frequency = map(distance, 5, 50, 60, 120)
+#     return frequency
 
-def distance_to_velocity(distance):
-    velocity = map(distance, 5, 50, 0, 127)
-    return velocity
-    return note
+# def distance_to_velocity(distance):
+#     velocity = map(distance, 5, 50, 0, 127)
+#     return velocity
+#     return note
 
 output = connect(HOST, PORT)
 
@@ -69,14 +70,10 @@ while True:
         
         distance = int(distance *100)
         vol = int(vol * 100)
-        
-#         print("distance", distance, "volume", vol)
-        #velocity = 127
-#         print("d", distance, "v",vol)
-        frequency = distance_to_note(distance, min_distance, max_distance)
-        velocity = distance_to_velocity(vol, min_distance, max_distance)
-#         print("freq",frequency, "velocity",velocity)
-        #print('frequency',frequency, 'last_frequency', last_frequency)
+
+        frequency = map_distance(distance, min_distance, max_distance, 60, 72)
+        velocity = map_distance(vol, min_distance, max_distance, 0, 127)
+
         if frequency is None:
             msg = Message('note_off', note=last_note)
             output.send(msg)
