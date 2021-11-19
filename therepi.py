@@ -43,7 +43,7 @@ def distance_to_velocity(distance, min, max):
         return velocity
     else:
         return None
-=======
+
 def distance_to_frequency(distance):
     """ Maps the distance to the frequency """
     frequency = map(distance, 5, 50, 60, 120)

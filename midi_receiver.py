@@ -20,16 +20,10 @@ with PortServer(HOST, PORT) as server:
     print("TherePi Midi Receiver Server started...")
     while True:
         try:
-            try:
-                client = server.accept()
-            except: 
-                print("oops error caught")
+            client = server.accept()
             for message in client:
-                try:
-                    port.send(message)
-                    print(message)
-                except:
-                    print("oops error caught")
+                port.send(message)
+                print(message)
         except KeyboardInterrupt:
             port.close()
             break
