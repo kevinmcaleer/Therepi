@@ -26,6 +26,7 @@ def map(x, in_min, in_max, out_min, out_max):
     """ Maps the value x from the input range to the output range """
     return int((x-in_min) * (out_max-out_min) / (in_max-in_min) + out_min)
 
+
 def distance_to_note(distance, min, max):
     """ Maps the distance to the note """
     
@@ -42,13 +43,16 @@ def distance_to_velocity(distance, min, max):
         return velocity
     else:
         return None
+=======
+def distance_to_frequency(distance):
+    """ Maps the distance to the frequency """
+    frequency = map(distance, 5, 50, 60, 120)
+    return frequency
 
-# def distance_to_note(distance):
-#     """ Converts the distance read from the range finder to a note """
-#     #note = frequency_to_midi(distance)
-#     note = distance
-#     print("distance", distance, "note", note)
-#     return note
+def distance_to_velocity(distance):
+    velocity = map(distance, 5, 50, 0, 127)
+    return velocity
+    return note
 
 output = connect(HOST, PORT)
 
@@ -60,6 +64,7 @@ last_frequency = 0
 while True:
     try:
         distance = pitch.distance
+
         vol = volume.distance
         
         distance = int(distance *100)
@@ -116,6 +121,7 @@ while True:
         #     print(msg)
         #     sleep(0.5)
         #     # output.send(Message('note_off', note=note))
+
     except KeyboardInterrupt:
         output.close()
         break

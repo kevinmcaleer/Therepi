@@ -18,6 +18,7 @@ FILENAME = 'tocata.mid'
 output = connect(HOST, PORT)
 
 print("Starting Midi Player")
+
 for msg in MidiFile(FILENAME).play():
     print(msg)
     output.send(msg)
